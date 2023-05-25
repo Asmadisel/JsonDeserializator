@@ -81,8 +81,8 @@ namespace JsonDeserializator.Controllers
         [HttpPost]
         public IActionResult MultiUpload(MultipleFilesModel model)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 model.IsResponse = true;
                 if (model.Files.Count > 0)
                 {
@@ -111,7 +111,7 @@ namespace JsonDeserializator.Controllers
                     model.IsSuccess = false;
                     model.Message = "Please select files";
                 }
-            }
+            //}
             return View("MultiFile", model);
         }
         ////Метод-заглушка для загрузки
@@ -123,8 +123,11 @@ namespace JsonDeserializator.Controllers
         //}
 
 
-        //Контроллер, выводящий список файлов по их сокращённому названию и дающий метод вывода данных по id
-
+        //Контроллер, выводящий список файлов по их сокращённому названию и дающий метод вывода данных в таблицу по id
+        public IActionResult JSONDeserialize()
+        {
+            return View();
+        }
         //Post-метод index проводит RedirrectToAction(GetTableView) в метод записи файла + проводит валидацию на то, есть ли такой файл уже в системе
 
         public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
