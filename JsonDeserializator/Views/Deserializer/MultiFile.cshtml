@@ -1,12 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model JsonDeserializator.Models.SingleFileModel
+﻿@model JsonDeserializator.Models.MultipleFilesModel
 
 @{
-    ViewData["Title"] = "Single File Upload";
+    ViewData["Title"] = "Multi File Upload";
+
 }
-<form asp-action="UploadSave" asp-controller="Deserializer" method="post" enctype="multipart/form-data">
+<form asp-action="MultiUpload" asp-controller="Deserializer" method="post" enctype="multipart/form-data">
     @if (Model.IsResponse)
     {
         if (Model.IsSuccess)
@@ -25,9 +23,9 @@
 
     <div class="row mt-2">
         <div class="col-12">
-            <label class="col-form-label">Выберите один файл</label>
-            <input asp-for="File" class="form-control" />
-            <span asp-validation-for="File" class="text-danger"></span>
+            <label class="col-form-label">Select Multiple Files</label>
+            <input asp-for="Files" class="form-control" multiple/>
+            <span asp-validation-for="Files" class="text-danger"></span>
         </div>
     </div>
 
@@ -39,10 +37,10 @@
     </div>
 </form>
 
-@section scripts {
+        @section scripts {
     <script type="text/javascript">
         function alert() {
             alert("Успешно отправлено");
         }
-    </script>
+        </script>
         }

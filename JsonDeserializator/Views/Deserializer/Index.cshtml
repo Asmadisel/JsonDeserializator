@@ -13,7 +13,7 @@
     <script type="text/javascript" src="~/js/DragAndDrop.js"></script>
 </head>
  
-@using(Html.BeginForm("OnPostUploadAsync", "Deserializer", FormMethod.Post))
+@*@using(Html.BeginForm("OnPostUploadAsync", "Deserializer", FormMethod.Post))
 {
     
     <div class="container d-flex justify-content-center mt-100" >
@@ -35,6 +35,25 @@
 
 
     </div>
+}*@
+
+@*@{
+    Html.BeginForm("Upload", "Deserializer", FormMethod.Get);
+    {
+        <div>
+            <button type="submit" asp-action="Upload" value="Upload File" style="width:150px;height:27px">Upload Single File  </button>
+        </div>
+    }
+    Html.EndForm();
+}*@
+@{
+    Html.BeginForm("MultiFile", "Deserializer", FormMethod.Get);
+    {
+        <div>
+            <button type="submit" asp-action="MultiFile" value="Upload File" style="width:150px;height:27px">Загрузить файл JSON  </button>
+        </div>
+    }
+    Html.EndForm();
 }
 
 <div style="width: auto; height: 200px; overflow: auto;">
@@ -47,6 +66,17 @@
     </ul>
 
 </div>
+
+
+@{
+    Html.BeginForm("MultiFile", "Deserializer", FormMethod.Get);
+    {
+        <div>
+            <button type="submit" asp-action="MultiFile" value="Upload File" style="width:150px;height:27px">Загрузить файл JSON  </button>
+        </div>
+    }
+    Html.EndForm();
+}
 
 @section scripts {
 
