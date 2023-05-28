@@ -1,11 +1,14 @@
 ﻿using JsonDeserializator.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
+
 
 namespace JsonDeserializator.Controllers
 {
     public class DeserializerController : Controller
     {
+        
         // GET: DeserializerController
         /*Контроллер отвечает за возможность загрузки json файла в формате динамического объекта, который десериализуется на сервере и представляется в виде таблицы, соответственно,
          * в контроллер должен падать динамический объект, определяемый в коде (представление типа drag-n-drop), после чего происходит обработка в контроллере, буферизация файла.
@@ -18,7 +21,7 @@ namespace JsonDeserializator.Controllers
         //Открывает окно для загрузки JSON файла для его десериализации, отправляет список уже загруженных ранее файлов. 
         public ActionResult Index()
         {
-            SingleFileModel model = new SingleFileModel();
+            FileModel model = new FileModel();
             var path = Environment.CurrentDirectory + @"\UploadedJsonFiles";
             DirectoryInfo dir = new DirectoryInfo(path);
 
@@ -26,12 +29,23 @@ namespace JsonDeserializator.Controllers
             {
              dir.Create();
             }
-            List<string> list = new List<string>();
-            string[] files = Directory.GetFiles(path);
-            foreach (string s in files)
+            //инициализация модели файла
+            List<FileModel> list = new List<FileModel>();
+            //перебор всех файлов, добавление id для файла
+            int i = 0;
+            foreach (FileInfo file in dir.GetFiles())
             {
-                list.Add(s);
+                i++;
+                list.Add(new FileModel() { Id = i, Name = file.Name, Path = file.DirectoryName });
             }
+            //массив с 
+            //string[] files = Directory.GetFiles(path);
+           
+            //foreach (var s in files.Select((value,i) => new { i, value }))
+            //{
+            //    new FileModel()
+            //}
+            ViewBag.model = list;
             return View(list);
         }
 
@@ -123,10 +137,46 @@ namespace JsonDeserializator.Controllers
         //}
 
 
-        //Контроллер, выводящий список файлов по их сокращённому названию и дающий метод вывода данных в таблицу по id
-        public IActionResult JSONDeserialize()
+        //Контроллер, открывающий файл в новом окне с рутом по id
+        public async Task<IActionResult> ReadFile(int id)
         {
-            return View();
+            if(id == null || id < 0)
+            {
+                return View("Error");
+            }
+            //иниц. id
+            
+            FileModel model = new FileModel();
+            var path = Environment.CurrentDirectory + @"\UploadedJsonFiles";
+            DirectoryInfo dir = new DirectoryInfo(path);
+            List<FileInfo> files = new List<FileInfo>();
+            //Заполняем коллекцию файлами
+            foreach(FileInfo f in dir.GetFiles())
+            {
+                files.Add(f);
+            }
+            //Возвращаем нужный файл
+            FileInfo file = files[id];
+            path = Convert.ToString(file.Name);
+            //using(StreamReader content = new StreamReader(file.DirectoryName))
+            //{
+            //    string? line;
+            //    while ((line = await content.ReadLineAsync()) != null)
+            //    {
+
+            //    }
+            //}
+
+            //List<string> lines = new List<string>();
+            //using (StreamReader content = new StreamReader(Convert.ToString(file)))
+            //{
+            //    string? line;
+            //    while ((line = content.ReadLine()) != null)
+            //    {
+            //        lines.Add(line);
+            //    }
+            //}
+            return View(file);
         }
         //Post-метод index проводит RedirrectToAction(GetTableView) в метод записи файла + проводит валидацию на то, есть ли такой файл уже в системе
 
