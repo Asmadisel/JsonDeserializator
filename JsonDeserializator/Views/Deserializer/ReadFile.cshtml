@@ -2,6 +2,10 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 *@
+@using Microsoft.AspNetCore.Components.Web
+@using Newtonsoft.Json;
+@using JsonDeserializator.Models;
+@using Newtonsoft.Json.Serialization;
 
 @model FileInfo
 @{
@@ -19,6 +23,7 @@
                 string? line;
                 while ((line = content.ReadLine()) != null)
                 {
+                    //Новая строка
                     line += "\n";
                     lines.Add(line);
                 }
@@ -26,6 +31,7 @@
     //}
 
 }
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,9 +55,10 @@ textarea {
 <form>
   <textarea>
             @foreach (string l in lines)
+            //Вывод всех элементов построчно
             {
                 
-                    @l
+                    @l 
                 
             }
   </textarea>
@@ -67,8 +74,15 @@ textarea {
                         <option value="13">Student</option>
                         <option value="14">Employers</option>
                     </optgroup>
-                </select><a class="btn btn-primary disabled fs-5 border rounded m-auto py-2 px-4" role="button" href="#" style="font-family: Aladin, serif;border-width: 2px;border-color: #041836;" disabled>Записать в базу данных</a>
-            </div><a class="btn btn-primary fs-5 border rounded m-auto py-2 px-4" role="button" href="#" style="background: rgb(217,26,49);font-family: Aladin, serif;border-width: 2px;border-color: rgb(58,2,2);">Удалить</a>
+                </select><a class="btn btn-primary disabled fs-5 border rounded m-auto py-2 px-4" role="button" href="#" style="font-family: Aladin, serif;border-width: 2px;border-color: #041836;" enabled">Записать в базу</a>
+            </div>
+            @if(Model.Name.EndsWith(".json"))
+            {
+                //Если файл является json, появляется кнопка для десериализации
+
+                <a  id="tabJS" onclick="OpenTable()" class="btn btn-primary fs-5 border rounded m-auto py-2 px-4" role="button" href="#" style="background: rgb(217,26,49);font-family: Aladin, serif;border-width: 2px;border-color: rgb(58,2,2);">Десериализовать в таблицу</a>
+            }
+            <a class="btn btn-primary fs-5 border rounded m-auto py-2 px-4" role="button" href="#" style="background: rgb(217,26,49);font-family: Aladin, serif;border-width: 2px;border-color: rgb(58,2,2);">Удалить</a>
             <div class="pb-2 pb-lg-1">
                 <h2 class="fw-bold mb-2"></h2>
                 <p class="mb-0"></p>
@@ -76,4 +90,64 @@ textarea {
             <div class="my-2"></div>
         </div>
     </div>
+    
+    <table runat="server" id="TheJsonTable" border="1" style="display:none">
+        
+            @if(Model.Name.EndsWith(".json"))
+            {
+                    //1-я настройка
+                    var settings = new JsonSerializerSettings
+            {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            Converters = {
+            new PropertyBagConverter()
+            }
+            };
+            //Весь массив становится одной строкой
+            string output = string.Join("",lines);
+            var message = output;
+            var des = JsonConvert.DeserializeObject<Message>(message, settings);
+
+            //Вывод элементов
+            //Console.WriteLine(des.Id);
+            //Console.WriteLine(des.Value);
+            //Console.WriteLine(des.Status);
+            @foreach (var prop in des.Properties)
+            {
+            <thead>
+                <tr style="width:auto;">
+                    <th>
+                        @prop.Key
+                    </th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                <tr> 
+                <td>
+                @prop.Value
+                </td>
+                </tr>
+            </tbody>
+            //Console.WriteLine("{0} : {1}", prop.Key, prop.Value);
+            }
+}
+                
+                
+        </table>
+
+    @section scripts {
+        <script type="text/javascript">
+            function OpenTable() {
+                let x = document.getElementById("TheJsonTable");
+               
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                    
+                } else {
+                    x.style.display = "none";
+                }
+            }
+            </script>
+    }
 </body>

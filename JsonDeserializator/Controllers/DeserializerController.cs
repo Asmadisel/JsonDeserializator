@@ -1,6 +1,7 @@
 ﻿using JsonDeserializator.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Web;
 
 
@@ -176,6 +177,7 @@ namespace JsonDeserializator.Controllers
             //        lines.Add(line);
             //    }
             //}
+            
             return View(file);
         }
         //Post-метод index проводит RedirrectToAction(GetTableView) в метод записи файла + проводит валидацию на то, есть ли такой файл уже в системе
